@@ -12,7 +12,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity
 	private ViewGroup		m_viewgropuVideo;
 	private ImageView       m_imageviewFullScreen;
 	private boolean         m_bIsFullScreen;
+	private ProgressBar		m_progressbarBuffering;
 
 	private View.OnLayoutChangeListener m_onVideoViewGroupLayoutChangeListener = new View.OnLayoutChangeListener()
 	{
@@ -173,6 +176,20 @@ public class MainActivity extends AppCompatActivity
 			// 「再生」「一時停止」ボタンの更新
 			updatePlayPauseButton();
 		}
+
+		@Override
+		public void onPlaybackStateChanged( int playbackState )
+		{
+			if( Player.STATE_BUFFERING == playbackState )
+			{	// バッファリング中は、バッファリングプログレスバーを表示
+				m_progressbarBuffering.setVisibility( View.VISIBLE );
+			}
+			//else if( Player.STATE_READY == playbackState )
+			else if( Player.STATE_BUFFERING != playbackState )
+			{	// レディになったら、バッファリングプログレスバーを非表示
+				m_progressbarBuffering.setVisibility( View.GONE );
+			}
+		}
 	};
 
 	@Override
@@ -180,6 +197,9 @@ public class MainActivity extends AppCompatActivity
 	{
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_main );
+
+		// 画面を常にオンにする
+		getWindow().addFlags( WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON );
 
 		// 初期状態は、画面は縦向きで、非フルスクリーン。
 		setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
@@ -196,6 +216,7 @@ public class MainActivity extends AppCompatActivity
 		m_imageviewFF10 = findViewById( R.id.imageview_ff_10 );
 		m_viewgropuVideo = findViewById( R.id.viewgroup_video );
 		m_imageviewFullScreen = findViewById( R.id.imageview_fullscreen );
+		m_progressbarBuffering = findViewById( R.id.progressbar_buffering );
 
 		// リスナーの設定
 		m_seekbar.setOnSeekBarChangeListener( m_onSeekBarChangeListener );
