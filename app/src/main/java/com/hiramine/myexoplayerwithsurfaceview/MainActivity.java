@@ -184,9 +184,8 @@ public class MainActivity extends AppCompatActivity
 			{	// バッファリング中は、バッファリングプログレスバーを表示
 				m_progressbarBuffering.setVisibility( View.VISIBLE );
 			}
-			//else if( Player.STATE_READY == playbackState )
-			else if( Player.STATE_BUFFERING != playbackState )
-			{	// レディになったら、バッファリングプログレスバーを非表示
+			else
+			{	// バッファリングが終了したら、バッファリングプログレスバーを非表示
 				m_progressbarBuffering.setVisibility( View.GONE );
 			}
 		}
